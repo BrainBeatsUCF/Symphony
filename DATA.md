@@ -1,4 +1,4 @@
-This document is a list of data used for the creation of generative models + potential leads / resources on acquring data 
+This document is a list of data used for the creation of generative models + potential leads / resources on acquring data. **The data itself lives in a shared Google Drive for the team**
 
 ## Sources:
 
