@@ -8,7 +8,7 @@ This document is a list of data used for the creation of generative models + pot
 * https://magenta.tensorflow.org/datasets/e-gmd
 * https://magenta.tensorflow.org/datasets/maestro
 * https://archive.org/details/archiveteam-geocities-midi-collection-2009 
-* http://www.midishrine.com/ (There was so much here I didnt even finish downloading it!)
+* http://www.midishrine.com/ (Downloaded 159 games at the time of collecting)
 * https://github.com/jukedeck/nottingham-dataset 
 
 ## Leads:
