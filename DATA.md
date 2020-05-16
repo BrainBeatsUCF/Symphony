@@ -17,7 +17,7 @@ A list of potential good sites for MIDI data to be used for model training.
 * http://abc.sourceforge.net/NMD/ (need to convert ABC Notation to MIDI)
 * https://magenta.tensorflow.org/datasets/nsynth#files (not in MIDI but in protobuf form)
 * https://magenta.tensorflow.org/datasets/bach-doodle (also in TFRecord protobuf form it seems)
-* https://www.vgmusic.com/ (scrape maybe?)
+* https://www.vgmusic.com/ 
 
 ## Resources:
 Resources on how to collect data / where to collect data, and other relevant topics.
