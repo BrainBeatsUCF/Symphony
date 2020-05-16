@@ -21,4 +21,4 @@ A list of potential good sites for MIDI data to be used for model training.
 
 ## Resources:
 Resources on how to collect data / where to collect data, and other relevant topics.
-* https://musescore.org/en (for converting sheet music to MIDI)
+* https://github.com/attejensen/abctool
