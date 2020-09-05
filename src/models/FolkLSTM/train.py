@@ -1,4 +1,9 @@
-from preprocess import generate_training_sequences, SEQUENCE_LENGTH, ROOT_PATH
+import sys
+sys.path.append("../../common/")
+
+import music_helpers
+from pathlib import Path
+import tensorflow.keras as keras
 
 
 
@@ -8,7 +13,7 @@ EPOCHS = 50 # 40 through 100 seems to work
 LEARNING_RATE = 0.001
 BATCH_SIZE = 64
 NUM_NEURONS = [256] # number of neurons in the eternal layers
-SAVE_MODEL_PATH = f"{ROOT_PATH}/model.h5"
+SAVE_MODEL_PATH = f"{Path.cwd()}/model.h5"
 
 def build_model(output_neurons, num_neurons, loss, learning_rate):
 
