@@ -1,19 +1,33 @@
 import sys
 sys.path.append("../../common/")
 
-import music_helpers
+import music_helper
 from pathlib import Path
 import tensorflow.keras as keras
 
 
-
+# TODO: Make the output neurons return from the music_helper where the data processing
+# actually happens
 OUTPUT_NEURONS = 45 # Equal to vocabulary size from the mapping.json
 LOSS_FUNC = "sparse_categorical_crossentropy"
-EPOCHS = 50 # 40 through 100 seems to work
+EPOCHS = 50 
 LEARNING_RATE = 0.001
 BATCH_SIZE = 64
 NUM_NEURONS = [256] # number of neurons in the eternal layers
-SAVE_MODEL_PATH = f"{Path.cwd()}/model.h5"
+ROOT_PATH = Path.cwd()
+SAVE_MODEL_PATH = f"{ROOT_PATH}/FolkLSTM.h5"
+
+# Used with the music helper class
+pipeline_config = {
+    'DATASET_PATH': f"{ROOT_PATH}/data",
+    'ENCODED_SONG_PATH': f"{ROOT_PATH}/processed_songs/",
+    'MAJOR_KEY': "C",
+    'MINOR_KEY': "A",
+    'SINGLE_FILE_DATASET_PATH': f"{ROOT_PATH}/massive_song_file_data.txt",
+    'MAPPING_PATH': f"{ROOT_PATH}/song_mappings.json",
+    'SEQUENCE_LENGTH': 64
+}
+
 
 def build_model(output_neurons, num_neurons, loss, learning_rate):
 
@@ -39,20 +53,16 @@ def build_model(output_neurons, num_neurons, loss, learning_rate):
 
 
 
-def train(output_neurons, num_neurons, loss, learning_rate):
+# Generate the training sequences
+music_helper = MusicHelper
+inputs, targets = music_helper.generate_training_sequences(pipeline_config)
 
-    # Generate the training sequences
-    inputs, targets = generate_training_sequences(SEQUENCE_LENGTH)
+# build the network
+model = build_model(OUTPUT_NEURONS, NUM_NEURONS, LOSS_FUNC, LEARNING_RATE)
 
-    # build the network
-    model = build_model(output_neurons, num_neurons, loss, learning_rate)
+# train the model
+model.fit(inputs, targets, epochs=EPOCHS, batch_size=BATCH_SIZE)
 
-    # train the model
-    model.fit(inputs, targets, epochs=EPOCHS, batch_size=BATCH_SIZE)
+# save the model
+model.save(SAVE_MODEL_PATH)
 
-    # save the model
-    model.save(SAVE_MODEL_PATH)
-
-
-if __name__ == "__main__":
-    train(OUTPUT_NEURONS, NUM_NEURONS, LOSS_FUNC, LEARNING_RATE)

@@ -229,6 +229,7 @@ class MusicHelper:
         songs = songs[:-1]
 
         # save string that contains all the dataset
+        # TODO: Move to file helper + add defensive checks
         with open(file_dataset_path, "w+") as fp:
             fp.write(songs)
 
@@ -259,18 +260,22 @@ class MusicHelper:
 
             # save songs to text file
             save_path = os.path.join(song_txt_path, str(i))
-            # TODO: Have file helper do this
+            # TODO: Have file helper do this + defensive checks
             with open(save_path, "w+") as fp:
                 fp.write(encoded_song)
 
     # TODO: Ensure this is as genric as possible and applicate 
     def song_data_pipeline(self, pipeline_confg: dict) -> None:
         """ A single method that encapsulates the entire preprocessing pipeline for files """
+
+        # TODO: Add better defensive coding, throughout the entire method really
+        if (len(pipeline_confg.keys()) < 6):
+             raise Exception("Not enough keys, returning...")
         
         print("Entering song preprocessing...")
         self.preprocess_songs(
             pipeline_confg['DATASET_PATH'], 
-            pipeline_confg['SONG_TXT_PATH'],
+            pipeline_confg['ENCODED_SONG_PATH'],
             pipeline_confg['MAJOR_KEY'],
             pipeline_confg['MINOR_KEY']
         )
