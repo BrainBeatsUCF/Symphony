@@ -2,19 +2,21 @@ import tensorflow.keras as keras
 import json
 import numpy as np
 import music21 as m21
-from preprocess import SEQUENCE_LENGTH, MAPPING_PATH, ROOT_PATH
 
 
 class MelodyGenerator:
 
-    def __init__(self, model_path: str):
-        self.model_path = model_path # we might not need this
+    # TODO: Proper dependency injection (is that even possible in Python?)
+    def __init__(self, model_path: str, music_helper, file_helper, mapping_path: str, sequence_length: int):
         self.model = keras.models.load_model(model_path)
+        self._music_helper = music_helper
+        self._file_helper = file_helper
+        self._start_symbols = ["/"] * sequence_length # This acts as our song delimtter 
 
-        with open(MAPPING_PATH, "r") as fp:
+        # TODO: move to file_helper
+        with open(mapping_path, "r") as fp:
             self._mappings = json.load(fp)
 
-        self._start_symbols = ["/"] * SEQUENCE_LENGTH # This acts as our song delimtter 
     
     def generate_melody(self, seed, num_steps, max_seq_len, temperature):
         """ 
@@ -36,7 +38,6 @@ class MelodyGenerator:
         for _ in range(num_steps):
             # limit the seed to max_seq_len
             seed = seed[-max_seq_len:] 
-
 
             # ont-hot encode the seed
             onehot_seed = keras.utils.to_categorical(seed, num_classes=len(self._mappings))
@@ -81,7 +82,7 @@ class MelodyGenerator:
 
         return index
 
-    def save_melody(self, melody, file_name, format="midi", step_duration=0.25,):
+    def save_melody(self, melody, file_name, format="midi", step_duration=0.25):
         """ 
             * The melody object you want to pass
             * the name of the saved file
@@ -123,17 +124,6 @@ class MelodyGenerator:
 
         # write the m21 stream to midi file
         stream.write(format, file_name)
-
-
-def example():
-    mg = MelodyGenerator(f"{ROOT_PATH}/model2.h5")
-    seed = "60 _ _ _ 60 _ 55 _ 57 _ 55 _ 60 _"
-    melody = mg.generate_melody(seed, 250, SEQUENCE_LENGTH, 1)
-    mg.save_melody(melody, f"{ROOT_PATH}/test.midi")
-    print(melody)
-
-if __name__ == "__main__":
-    example()
 
 
 
