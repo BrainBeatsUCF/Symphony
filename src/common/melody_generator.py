@@ -2,6 +2,7 @@ import tensorflow.keras as keras
 import json
 import numpy as np
 import music21 as m21
+from typing import List
 
 
 class MelodyGenerator:
@@ -18,12 +19,16 @@ class MelodyGenerator:
             self._mappings = json.load(fp)
 
     
-    def generate_melody(self, seed, num_steps, max_seq_len, temperature):
+    def generate_melody(self, seed: str, num_steps: int, max_seq_len: int, temperature: float) -> List[str]:
         """ 
-        * seed - what we want to pass to the network and the network countinues that seed
-        * num_steps - How far we want the network to predict
-        * max_seq_len - How many steps of the seeds do we want to consider for the network (the seed will grow large), 
-        so we pass the seed as a sliding window
+        Generates a melody from a starting seed and returns a list of symbols that can undergo
+        additional processing
+
+        :param seed (str): what we want to pass to the network and the network countinues that seed
+        :param num_steps (int): How far we want the network to predict
+        :param max_seq_len (int): ow many steps of the seeds do we want to consider for the network (the seed will grow large)
+        :param temperature (float): How creative we want our model to be
+        :return (List[str]):
         """
 
         # create seed with start symbols
@@ -39,7 +44,8 @@ class MelodyGenerator:
             # limit the seed to max_seq_len
             seed = seed[-max_seq_len:] 
 
-            # ont-hot encode the seed
+            # one-hot encode the seed
+            # The mappings is the "vocabulary" of the object
             onehot_seed = keras.utils.to_categorical(seed, num_classes=len(self._mappings))
 
             # Keras expects 3-dimensions for predict so we use numpy to add that
@@ -67,13 +73,15 @@ class MelodyGenerator:
         return melody
 
 
-    def _sample_with_temperature(self, probabilities, temperature=0.7):
+    def _sample_with_temperature(self, probabilities: List[float], temperature: float) -> int:
         """ 
-        The temperature modifies the probability distribution
-        the lower the temperature, the more deterministic the sampling is
-        if the temperature is 1 that is just default settings
-        higher temperature, more exploritive model
+        Uses some clever math to pick an encoding based on model output probabilities
+        
+        :param probabilities (List[float]): The output of the model associated with probabilites
+        :param temperature (float): How creative we want our model to be
+        :return (int):
         """
+
         predicitions = np.log(probabilities) / temperature
         probabilities =  np.exp(predicitions) / np.sum(np.exp(predicitions))
 
@@ -82,12 +90,15 @@ class MelodyGenerator:
 
         return index
 
-    def save_melody(self, melody, file_name, format="midi", step_duration=0.25):
+    def save_melody(self, melody: List[str], file_name: str, format="midi", step_duration=0.25):
         """ 
-            * The melody object you want to pass
-            * the name of the saved file
-            * the file format you want to save it in
-            * The step duration you trained the model in, 0.25 is a sixteenth note
+        Converts our list to a m21 stream and saves the melody to the desired file format
+
+        :param melody (List[str]): Our melody list to be saved on disk
+        :param file_name (str): The name of the file we want to save including model path
+        :param format (str): The music file format you want to save to
+        :param step_duration (float): Music theory stuff, the smallest note used, make sure this matches what you trained the model with
+        :return (None): This function returns nothing, it saves to disk
         """
 
         # create a music21 stream
