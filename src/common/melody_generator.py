@@ -9,6 +9,15 @@ class MelodyGenerator:
 
     # TODO: Proper dependency injection (is that even possible in Python?)
     def __init__(self, model_path: str, music_helper, file_helper, mapping_path: str, sequence_length: int):
+        """
+        Our constructor for the MelodyGenerator class
+
+        :param model_path (str):
+        :param music_helper (MusicHelper):
+        :param file_helper (FileHelper):
+        :param mapping_path (str):
+        :param sequence_length(int):
+        """
         self.model = keras.models.load_model(model_path)
         self._music_helper = music_helper
         self._file_helper = file_helper

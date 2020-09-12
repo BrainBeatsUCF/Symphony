@@ -7,7 +7,7 @@ class FileHelper:
 
     def load_file_as_str(self, file_path: str) -> str:
         """
-        Loads the file at a specificed path
+        Loads the file at a specificed path, returns an error otherwise
         
         :param file_path (str): The path to the file you want to load
         :return _file a str of the contents of the file
@@ -18,7 +18,7 @@ class FileHelper:
                 _file = fp.read()
             return _file
         except Exception:
-            print(f"Error reading file at: {file_path}")
+            raise Exception(f"Error reading file at: {file_path}")
 
     def load_file_as_json(self, file_path) -> dict:
         pass
