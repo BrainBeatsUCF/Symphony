@@ -118,8 +118,8 @@ class MelodyGenerator:
         start_symbol = None
         step_counter = 1
 
+        #TODO: Use a guard structure instead of nested if-blocks. For example
         for i, symbol in enumerate(melody):
-
             # handle case in which we have a note/rest
             # else handle case in which we have a prolongation sign "_"
             if symbol != "_" or (i + 1) == len(melody):
@@ -144,11 +144,3 @@ class MelodyGenerator:
 
         # write the m21 stream to midi file
         stream.write(format, file_name)
-
-
-
-
-
-
-
-
