@@ -25,10 +25,11 @@ class MusicHelper:
         :param acceptable_durations (List[float]): This is the range of notes that are ok to add for the model
         :return MusicHelper: This is the constructor for the class
         """
+        print("MusicHelper has been created...")
         self.acceptable_durations = acceptable_durations
         self._file_helper = file_helper
 
-    def load_songs(self, dataset_path: str, file_type="midi"):
+    def load_songs(self, dataset_path: str, file_type: str):
         """
         Loads all pieces of a specific file type
 
@@ -250,7 +251,7 @@ class MusicHelper:
 
         return songs
 
-    def preprocess_songs(self, dataset_path: str, song_txt_path: str, major_key: str, minor_key: str) -> None:
+    def preprocess_songs(self, dataset_path: str, song_txt_path: str, major_key: str, minor_key: str, file_type: str) -> None:
         """
         A method that encompasses many of the preprocessing operations needed for converting
         the songs to a helpful representation for our RNN/LSTM/Time Series centric models
@@ -264,7 +265,7 @@ class MusicHelper:
 
         # load folk songs
         print("Loading songs...")
-        songs = self.load_songs(dataset_path)
+        songs = self.load_songs(dataset_path, file_type)
         print(f"Loaded {len(songs)} songs.")
 
         for i, song in enumerate(songs):
@@ -286,7 +287,7 @@ class MusicHelper:
                 fp.write(encoded_song)
 
     # TODO: Ensure this is as genric as possible and applicate 
-    def song_data_pipeline(self, pipeline_confg: dict) -> None:
+    def song_data_pipeline(self, pipeline_config: dict) -> None:
         """ 
         A single method that encapsulates the entire preprocessing pipeline for files. 
 
@@ -295,31 +296,32 @@ class MusicHelper:
         """
 
         # TODO: Add better defensive coding, throughout the entire method really
-        if (len(pipeline_confg.keys()) < 6):
+        if (len(pipeline_config.keys()) < 6):
              raise Exception("Not enough keys, returning...")
         
         print("Entering song preprocessing...")
         self.preprocess_songs(
-            pipeline_confg['DATASET_PATH'], 
-            pipeline_confg['ENCODED_SONG_PATH'],
-            pipeline_confg['MAJOR_KEY'],
-            pipeline_confg['MINOR_KEY']
+            pipeline_config['DATASET_PATH'], 
+            pipeline_config['ENCODED_SONG_PATH'],
+            pipeline_config['MAJOR_KEY'],
+            pipeline_config['MINOR_KEY'],
+            pipeline_config['FILE_TYPE']
         )
         
         songs = self.create_single_file_dataset(
-            pipeline_confg['ENCODED_SONG_PATH'],
-            pipeline_confg['SINGLE_FILE_DATASET_PATH'],
-            pipeline_confg['SEQUENCE_LENGTH']
+            pipeline_config['ENCODED_SONG_PATH'],
+            pipeline_config['SINGLE_FILE_DATASET_PATH'],
+            pipeline_config['SEQUENCE_LENGTH']
         )
 
-        self.create_mapping(songs, pipeline_confg['MAPPING_PATH'])
+        self.create_mapping(songs, pipeline_config['MAPPING_PATH'])
         print("Finished preprocessing songs!")
 
         print("Generating training data...")
         inputs, targets = self.generate_training_sequences(
-            pipeline_confg['SEQUENCE_LENGTH'],
-            pipeline_confg['SINGLE_FILE_DATASET_PATH'],
-            pipeline_confg['MAPPING_PATH']
+            pipeline_config['SEQUENCE_LENGTH'],
+            pipeline_config['SINGLE_FILE_DATASET_PATH'],
+            pipeline_config['MAPPING_PATH']
         )
 
         print("Finishing creating training data. Now returning....")
