@@ -214,7 +214,7 @@ class MusicHelper:
         # one-hot encode the sequences
         # inputs: (# of sequences, sequence length, vocabulary size)
         vocabulary_size = len(set(int_songs))
-        inputs = keras.utils.to_categorical(inputs, num_classes=vocabulary_size)
+        inputs = keras.utils.to_categorical(inputs, num_classes=vocabulary_size).astype(np.uint8)
         targets = np.array(targets)
 
         # Inputs will be a 3D Numpy array as demonstrated above
