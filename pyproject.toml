@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "symphony"
+version = "0.1.0"
+description = "Source code the generative models that power brain beats music section, and API's for deploying them"
+authors = ["Brain Beats"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.19.1"
+music21 = "^6.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
