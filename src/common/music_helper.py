@@ -4,6 +4,7 @@ import music21 as m21
 import tensorflow.keras as keras
 import numpy as np
 from typing import List
+from file_helper import FileHelper
 
 # durations are expressed in quarter length
 ACCEPTABLE_DURATIONS = [
@@ -19,7 +20,7 @@ ACCEPTABLE_DURATIONS = [
 
 class MusicHelper:
     # TODO: Depdency Injection
-    def __init__(self, file_helper, acceptable_durations=ACCEPTABLE_DURATIONS):
+    def __init__(self, file_helper: FileHelper, acceptable_durations=ACCEPTABLE_DURATIONS):
         """
         :param file_helper (FileHelper): This is a file_helper object to help with writing/reading files
         :param acceptable_durations (List[float]): This is the range of notes that are ok to add for the model

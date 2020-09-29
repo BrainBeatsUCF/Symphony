@@ -1,0 +1,5 @@
+numpy
+pandas
+tensorflow
+fastapi
+music21

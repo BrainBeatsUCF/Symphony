@@ -25,3 +25,12 @@ class FileHelper:
 
     def save_to_json(self, save_path) -> None:
         pass
+
+    # TODO: Might not need this
+    def readBytes(self, file_path) -> bytes:
+        try:
+            with open(file_path, "rb") as fb:
+                file_bytes = fb.read()
+                return file_bytes
+        except Exception:
+            raise Exception(f"Error trying to read bytes at: {file_path}")
