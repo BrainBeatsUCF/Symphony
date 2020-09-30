@@ -1,0 +1,5 @@
+Pipfile
+*.md
+Dockerfile
+.gitignore
+FolkLSTM/data/

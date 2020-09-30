@@ -1,4 +1,5 @@
 import tensorflow.keras as keras
+import tensorflow as tf
 import json
 import numpy as np
 import music21 as m21
@@ -18,7 +19,8 @@ class MelodyGenerator:
         :param mapping_path (str):
         :param sequence_length(int):
         """
-        self.model = keras.models.load_model(model_path)
+        with tf.device('/cpu:0'):
+            self.model = keras.models.load_model(model_path)
         self._music_helper = music_helper
         self._file_helper = file_helper
         self._start_symbols = ["/"] * sequence_length # This acts as our song delimtter 

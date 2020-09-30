@@ -1,0 +1,2 @@
+This is the just a placeholder text file
+This is where the output of the API is stored
