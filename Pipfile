@@ -12,6 +12,8 @@ tensorflow = "*"
 fastapi = "*"
 music21 = "*"
 matplotlib = "*"
+aiofiles = "*"
+midi2audio = "*"
 
 [requires]
 python_version = "3.8"

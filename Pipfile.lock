@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "af67fbd3038df6959aff513b1c93865bb5415d54377a8563ed9b36ea3922d1dc"
+            "sha256": "1d69931aa4d72e8bad035162e229b3db18c181e4708ce083f73a09afd0d2d04f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -22,6 +22,14 @@
                 "sha256:ea07d7d437798bffc14f39fccec3909d251a1e76e233205ded72b71c267e0178"
             ],
             "version": "==0.10.0"
+        },
+        "aiofiles": {
+            "hashes": [
+                "sha256:377fdf7815cc611870c59cbd07b68b180841d2a2b79812d8c218be02448c2acb",
+                "sha256:98e6bcfd1b50f97db4980e182ddd509b7cc35909e903a8fe50d8849e02d815af"
+            ],
+            "index": "pypi",
+            "version": "==0.5.0"
         },
         "aiohttp": {
             "hashes": [
@@ -289,6 +297,14 @@
             ],
             "index": "pypi",
             "version": "==3.3.2"
+        },
+        "midi2audio": {
+            "hashes": [
+                "sha256:762a2df3806d373f7f89962f22ecc6d3cb49f82ae4212fab560a479cbb6c9c08",
+                "sha256:b26590388e1f62753096b075b877e2529ff62faad00c07811ac8111a73e4a78a"
+            ],
+            "index": "pypi",
+            "version": "==0.1.1"
         },
         "more-itertools": {
             "hashes": [

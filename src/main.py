@@ -1,6 +1,8 @@
 import sys
 sys.path.insert(0, "./common/")
 
+import os
+import uuid
 from typing import Optional
 from fastapi import Body, Request, FastAPI, HTTPException
 from pydantic import BaseModel
@@ -8,7 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from melody_generator import MelodyGenerator
 from file_helper import FileHelper
 from music_helper import MusicHelper
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse
+from midi2audio import FluidSynth
+
 
 
 
@@ -19,7 +23,9 @@ model_paths = {
     'FolkLSTM': {
         'model_path': './models/FolkLSTM/FolkLSTM-Draft1.h5',
         'mapping_path': './models/FolkLSTM/song_mappings.json',
-        'sequence_length': 64}
+        'sequence_length': 64,
+        'soundfont': './soundfonts/General_MIDI_64_1.6.sf2'
+    }
 }
 
 file_helper = FileHelper()
@@ -68,6 +74,7 @@ async def getSample(sampleRequest: SampleRequest):
     if sampleRequest.instrument_name not in model_paths:
         raise HTTPException(status_code=404, detail="Instrument not found")
     
+    # Init our model
     melody_generator = MelodyGenerator(
         model_paths[sampleRequest.instrument_name]['model_path'],
         music_helper,
@@ -76,6 +83,7 @@ async def getSample(sampleRequest: SampleRequest):
         model_paths[sampleRequest.instrument_name]['sequence_length']
     )
 
+    # Generate our melody from a seed
     melody = melody_generator.generate_melody(
         sampleRequest.seed,
         sampleRequest.num_steps,
@@ -83,17 +91,22 @@ async def getSample(sampleRequest: SampleRequest):
         sampleRequest.temperature
     )
 
+    # Save the melody to disk
+    unique_id = str(uuid.uuid4())
+    save_file_name = f"./output/{unique_id}.mid"
     melody_generator.save_melody(
         melody,
-        'test.midi',
+        save_file_name,
         format="midi"
     )
 
-    try:
-        sample_audio = file_helper.readBytes("./test.midi")
-    except Exception:
-        # TODO: Use correct HTTP verb
-        raise HTTPException(status_code=500, detail="Unable to read bytes for file")
+    # Convert the midi to wav
+    wav_file_name = f"./output/{unique_id}.wav"
+    fs = FluidSynth(model_paths[sampleRequest.instrument_name]['soundfont'])
+    fs.midi_to_audio(save_file_name, wav_file_name)
 
-    return StreamingResponse(sample_audio, media_type="audio/midi")
+    # Delete the local midi file (we also need a way to delete any local .wav files, maybe as middleware?)
+
+    # Return the audio file
+    return FileResponse(wav_file_name)
 
