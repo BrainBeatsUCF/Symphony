@@ -4,3 +4,4 @@ CKSUM
 *.midi
 data/
 src/models/FolkLSTM/processed_songs/**
+*.sf2

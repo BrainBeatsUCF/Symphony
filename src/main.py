@@ -24,7 +24,7 @@ model_paths = {
         'model_path': './models/FolkLSTM/FolkLSTM-Draft1.h5',
         'mapping_path': './models/FolkLSTM/song_mappings.json',
         'sequence_length': 64,
-        'soundfont': './soundfonts/General_MIDI_64_1.6.sf2'
+        'soundfont': './soundfonts/FPDPCM98.SF2'
     }
 }
 
