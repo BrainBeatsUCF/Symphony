@@ -4,30 +4,33 @@ import json
 import numpy as np
 import music21 as m21
 from typing import List
+from file_helper import FileHelper
+from music_helper import MusicHelper
 
 
 class MelodyGenerator:
-
-    # TODO: Proper dependency injection (is that even possible in Python?)
-    def __init__(self, model_path: str, music_helper, file_helper, mapping_path: str, sequence_length: int):
+    def __init__(self, model_path: str, music_helper: MusicHelper, file_helper: FileHelper, mapping_path: str, sequence_length: int, cpu = True):
         """
         Our constructor for the MelodyGenerator class
 
-        :param model_path (str):
-        :param music_helper (MusicHelper):
+        :param model_path (str): Where the .h5 model file is being stored
+        :param music_helper (MusicHelper): MusicHelper class so its methods can be invokved
         :param file_helper (FileHelper):
-        :param mapping_path (str):
+        :param mapping_path (str): Where are the mappings for the model being stored?
         :param sequence_length(int):
         """
-        with tf.device('/cpu:0'):
+
+        # The CPU is normally fast enough to do inference, and this makes local development easier
+        if cpu:
+            with tf.device('/cpu:0'):
+                self.model = keras.models.load_model(model_path)
+        else:
             self.model = keras.models.load_model(model_path)
+
         self._music_helper = music_helper
         self._file_helper = file_helper
         self._start_symbols = ["/"] * sequence_length # This acts as our song delimtter 
-
-        # TODO: move to file_helper
-        with open(mapping_path, "r") as fp:
-            self._mappings = json.load(fp)
+        self._mappings = self._file_helper.loadJSON(mapping_path)
 
     
     def generate_melody(self, seed: str, num_steps: int, max_seq_len: int, temperature: float) -> List[str]:
@@ -101,13 +104,13 @@ class MelodyGenerator:
 
         return index
 
-    def save_melody(self, melody: List[str], file_name: str, format="midi", step_duration=0.25):
+    def save_melody(self, melody: List[str], file_name: str, format="mid", step_duration=0.25):
         """ 
         Converts our list to a m21 stream and saves the melody to the desired file format
 
         :param melody (List[str]): Our melody list to be saved on disk
         :param file_name (str): The name of the file we want to save including model path
-        :param format (str): The music file format you want to save to
+        :param format (str): The music file format you want to save to, music21 supports very little so this should always be midi
         :param step_duration (float): Music theory stuff, the smallest note used, make sure this matches what you trained the model with
         :return (None): This function returns nothing, it saves to disk
         """
@@ -120,7 +123,6 @@ class MelodyGenerator:
         start_symbol = None
         step_counter = 1
 
-        #TODO: Use a guard structure instead of nested if-blocks. For example
         for i, symbol in enumerate(melody):
             # handle case in which we have a note/rest
             # else handle case in which we have a prolongation sign "_"
@@ -135,7 +137,6 @@ class MelodyGenerator:
                         m21_event = m21.note.Rest(quarterLength=quarter_length_duration)
                     else:
                         m21_event = m21.note.Note(int(start_symbol), quarterLength=quarter_length_duration)
-
                     stream.append(m21_event)
                     
                     # reset to the other note
@@ -145,4 +146,7 @@ class MelodyGenerator:
                 step_counter += 1
 
         # write the m21 stream to midi file
-        stream.write(format, file_name)
+        try:
+            stream.write(format, file_name)
+        except Exception as e:
+            print(f"Exception when trying to write file: {file_name} with error: {e}")

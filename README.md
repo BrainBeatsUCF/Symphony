@@ -1,6 +1,9 @@
 # Symphony
 Home of the generative models that power Brain Beats
 
+![](https://github.com/BrainBeatsUCF/Symphony/workflows/PythonFormatting/badge.svg)
+
+
 ## Local Instructions
 * Clone the repo
 * Navigate to the backend directory

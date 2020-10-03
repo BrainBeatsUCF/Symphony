@@ -19,7 +19,6 @@ ACCEPTABLE_DURATIONS = [
 ]
 
 class MusicHelper:
-    # TODO: Depdency Injection
     def __init__(self, file_helper: FileHelper, acceptable_durations=ACCEPTABLE_DURATIONS):
         """
         :param file_helper (FileHelper): This is a file_helper object to help with writing/reading files
@@ -145,19 +144,18 @@ class MusicHelper:
         :return int_songs
         """
         int_songs = []
-        
-        # load mappings
-        # TODO: Make the file_helper do this
-        with open(mapping_path, "r") as fp:
-            mappings = json.load(fp)
+        mappings = self._file_helper.loadJSON(mapping_path)
 
         # cast songs string to a list
         songs = songs.split()
 
         # map sings to int
         for symbol in songs:
-            # TODO: Add some defensive coding strats here if key !exists 
-            int_songs.append(mappings[symbol])
+            try:
+                int_songs.append(mappings[symbol])
+            except Exception as e:
+                # This is here to catch any KeyErrors resulting from loading the incorrect/out of date mapping dict
+                print(f"Error in MusicHelper convert_songs_to_int on symbol: {symbol} with exception: {e}")
 
         return int_songs
 
@@ -181,9 +179,7 @@ class MusicHelper:
             mappings[symbol] = i
 
         # save voabulary to a json file
-        # TODO: Have the file_helper do this
-        with open(mapping_path, "w+") as fp:
-            json.dump(mappings, fp, indent=4)
+        self._file_helper.saveJSON(mappings, mapping_path)
 
     def generate_training_sequences(self, sequence_length: int, single_file_dataset_path: str, mapping_path: str):
         """ 
@@ -231,7 +227,6 @@ class MusicHelper:
         :param sequence_length (int): # of time steps to be considered for training
         :return songs (str): String containing all songs in dataset + delimiters
         """
-
         new_song_delimiter = "/ " * sequence_length
         songs = ""
 
@@ -246,10 +241,7 @@ class MusicHelper:
         songs = songs[:-1]
 
         # save string that contains all the dataset
-        # TODO: Move to file helper + add defensive checks
-        with open(file_dataset_path, "w+") as fp:
-            fp.write(songs)
-
+        self._file_helper.saveFile(songs, file_dataset_path)
         return songs
 
     def preprocess_songs(self, dataset_path: str, song_txt_path: str, major_key: str, minor_key: str, file_type: str) -> None:
@@ -283,11 +275,8 @@ class MusicHelper:
 
             # save songs to text file
             save_path = os.path.join(song_txt_path, str(i))
-            # TODO: Have file helper do this + defensive checks
-            with open(save_path, "w+") as fp:
-                fp.write(encoded_song)
+            self._file_helper.saveFile(encoded_song, save_path)
 
-    # TODO: Ensure this is as genric as possible and applicate 
     def song_data_pipeline(self, pipeline_config: dict) -> None:
         """ 
         A single method that encapsulates the entire preprocessing pipeline for files. 
@@ -295,8 +284,6 @@ class MusicHelper:
         :param pipeline_config (dict): A dict containing all the parameters and arguments for the methods being called.
         :return None: This method returns nothing
         """
-
-        # TODO: Add better defensive coding, throughout the entire method really
         if (len(pipeline_config.keys()) < 6):
              raise Exception("Not enough keys, returning...")
         
