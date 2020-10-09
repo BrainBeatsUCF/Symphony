@@ -1,0 +1,8 @@
+{
+    "FolkLSTM": {
+        "model_path": "./models/FolkLSTM/FolkLSTM-Draft1.h5",
+        "mapping_path": "./models/FolkLSTM/song_mappings.json",
+        "sequence_length": 64,
+        "soundfont": "./soundfonts/FPDPCM98.SF2"
+    }
+}

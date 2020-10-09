@@ -1,7 +1,8 @@
 __pycache__/
 CKSUM
 *.krn
-*.midi
+*.mid
+*.wav
 data/
 src/models/FolkLSTM/processed_songs/**
 *.sf2

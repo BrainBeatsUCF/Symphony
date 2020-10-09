@@ -1,14 +1,17 @@
 import sys
 sys.path.insert(0, "./../../common/")
 
-from music_helper import MusicHelper
 from file_helper import FileHelper
+from music_helper import MusicHelper
 from pathlib import Path
 import tensorflow.keras as keras
 
-# TODO: Make the output neurons return from the music_helper where the data processing
-# actually happens
-OUTPUT_NEURONS = 45 # Equal to vocabulary size from the mapping.json
+
+file_helper = FileHelper()
+music_helper = MusicHelper(file_helper)
+
+mappings = file_helper.loadJSON("./song_mappings.json")
+OUTPUT_NEURONS = len(mappings.keys())  # Equal to vocabulary size from the mapping.json
 LOSS_FUNC = "sparse_categorical_crossentropy"
 EPOCHS = 50
 LEARNING_RATE = 0.001
@@ -30,9 +33,7 @@ pipeline_config = {
     'STAGE': 0
 }
 
-
 def build_model(output_neurons, num_neurons, loss, learning_rate):
-
     # Create the model architecture, functionally!
     # If we say None for the shape, it lets us have any length input for the time steps
     # This is important because we might wanna feed it different length premade sequences
@@ -47,30 +48,17 @@ def build_model(output_neurons, num_neurons, loss, learning_rate):
     model.compile(loss=loss,
                 optimizer=keras.optimizers.Adam(lr=learning_rate),
                 metrics=["accuracy"])
-
     model.summary()
-
     return model
 
-
-
-
 # Generate the training sequences
-file_helper = FileHelper()
-music_helper = MusicHelper(file_helper)
-#inputs, targets = music_helper.song_data_pipeline(pipeline_config)
-inputs, targets = music_helper.generate_training_sequences(
-            pipeline_config['SEQUENCE_LENGTH'],
-            pipeline_config['SINGLE_FILE_DATASET_PATH'],
-            pipeline_config['MAPPING_PATH']
-        )
+inputs, targets = music_helper.song_data_pipeline(pipeline_config)
 
 # build the network
 model = build_model(OUTPUT_NEURONS, NUM_NEURONS, LOSS_FUNC, LEARNING_RATE)
 
 # train the model
-checkpoint_cb = keras.callbacks.ModelCheckpoint("FolkLSTM_Checkpoint.h5", save_best_only=True)
-model.fit(inputs, targets, epochs=EPOCHS, batch_size=BATCH_SIZE, callbacks=[checkpoint_cb])
+model.fit(inputs, targets, epochs=EPOCHS, batch_size=BATCH_SIZE)
 
 # save the model
 model.save(SAVE_MODEL_PATH)

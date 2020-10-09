@@ -13,23 +13,11 @@ from music_helper import MusicHelper
 from fastapi.responses import FileResponse
 from midi2audio import FluidSynth
 
-
-
-
-# init our API + any constants
+# init our API, helpers, and constants
 app = FastAPI()
-
-model_paths = {
-    'FolkLSTM': {
-        'model_path': './models/FolkLSTM/FolkLSTM-Draft1.h5',
-        'mapping_path': './models/FolkLSTM/song_mappings.json',
-        'sequence_length': 64,
-        'soundfont': './soundfonts/FPDPCM98.SF2'
-    }
-}
-
 file_helper = FileHelper()
 music_helper = MusicHelper(file_helper)
+model_paths = file_helper.loadJSON("./model_info.json")
 
 # add our app middleware
 origins = [
@@ -73,6 +61,8 @@ async def testRequest(req: Request):
 async def getSample(sampleRequest: SampleRequest):
     if sampleRequest.instrument_name not in model_paths:
         raise HTTPException(status_code=404, detail="Instrument not found")
+
+    # Delete any previous midi/wav files still present locally
     
     # Init our model
     melody_generator = MelodyGenerator(
@@ -104,8 +94,6 @@ async def getSample(sampleRequest: SampleRequest):
     wav_file_name = f"./output/{unique_id}.wav"
     fs = FluidSynth(model_paths[sampleRequest.instrument_name]['soundfont'])
     fs.midi_to_audio(save_file_name, wav_file_name)
-
-    # Delete the local midi file (we also need a way to delete any local .wav files, maybe as middleware?)
 
     # Return the audio file
     return FileResponse(wav_file_name)
