@@ -1,12 +1,15 @@
-FROM python:3.7-alpine
+FROM ubuntu:20.04
+
+RUN apt update -y
+RUN apt upgrade -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+RUN apt install python3-pip -y
+RUN  apt install fluidsynth -y
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-RUN apk update \
-    && apk add -u fluidsynth \
-    tini \
-    && rm -rf /var/lib/apt/lists/*
+
 
 EXPOSE 8000
 COPY . .

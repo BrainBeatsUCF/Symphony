@@ -9,12 +9,11 @@ from music_helper import MusicHelper
 
 
 class MelodyGenerator:
-    def __init__(self, model_path: str, music_helper: MusicHelper, file_helper: FileHelper, mapping_path: str, sequence_length: int, cpu = True):
+    def __init__(self, model_path: str, file_helper: FileHelper, mapping_path: str, sequence_length: int, cpu = True):
         """
         Our constructor for the MelodyGenerator class
 
         :param model_path (str): Where the .h5 model file is being stored
-        :param music_helper (MusicHelper): MusicHelper class so its methods can be invokved
         :param file_helper (FileHelper):
         :param mapping_path (str): Where are the mappings for the model being stored?
         :param sequence_length(int):
@@ -27,7 +26,6 @@ class MelodyGenerator:
         else:
             self.model = keras.models.load_model(model_path)
 
-        self._music_helper = music_helper
         self._file_helper = file_helper
         self._start_symbols = ["/"] * sequence_length # This acts as our song delimtter 
         self._mappings = self._file_helper.loadJSON(mapping_path)

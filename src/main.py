@@ -67,7 +67,6 @@ async def getSample(sampleRequest: SampleRequest):
     # Init our model
     melody_generator = MelodyGenerator(
         model_paths[sampleRequest.instrument_name]['model_path'],
-        music_helper,
         file_helper,
         model_paths[sampleRequest.instrument_name]['mapping_path'],
         model_paths[sampleRequest.instrument_name]['sequence_length']

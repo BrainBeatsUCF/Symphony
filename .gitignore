@@ -6,3 +6,4 @@ CKSUM
 data/
 src/models/FolkLSTM/processed_songs/**
 *.sf2
+Pipfile.lock
