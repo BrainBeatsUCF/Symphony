@@ -1,5 +1,7 @@
-numpy
-pandas
 tensorflow
 fastapi
+uvicorn
+aiofiles
 music21
+matplotlib
+midi2audio

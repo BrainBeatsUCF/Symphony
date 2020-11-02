@@ -1,5 +1,7 @@
-Pipfile
+Pipfile.lock
 *.md
 Dockerfile
 .gitignore
 FolkLSTM/data/
+.github/
+.vscode/
