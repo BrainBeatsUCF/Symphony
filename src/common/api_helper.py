@@ -1,5 +1,10 @@
 import random
 
+def delete_files(file):
+    if file.endswith(".wav") or file.endswith(".mid"):
+        return True
+    else:
+        return False
 
 def determine_seed(mappings_path: str, file_helper):
     note_mappings = file_helper.loadJSON(mappings_path)

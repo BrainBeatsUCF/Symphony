@@ -5,7 +5,7 @@ DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
 sudo apt install git
 sudo apt install python3-pip -y
 sudo apt install fluidsynth -y
-pip install tensorflow fastapi uvicorn aiofiles music21 matplotlib midi2audio
+pip3 install tensorflow fastapi uvicorn aiofiles music21 matplotlib midi2audio python-decouple
 git clone https://github.com/BrainBeatsUCF/Symphony.git
 cd Symphony/
 cd src/
