@@ -5,3 +5,12 @@ Dockerfile
 FolkLSTM/data/
 .github/
 .vscode/
+.ipynb_checkpoints/
+checkpoints/
+data/
+processed_songs/
+massive_song_file_data.txt
+*.ipynb
+output/*.wav
+output/*.mid
+output/*.midi

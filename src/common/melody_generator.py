@@ -5,7 +5,6 @@ import numpy as np
 import music21 as m21
 from typing import List
 from file_helper import FileHelper
-from music_helper import MusicHelper
 
 
 class MelodyGenerator:
@@ -44,8 +43,11 @@ class MelodyGenerator:
         """
 
         # create seed with start symbols
-        # it is passed to us as a str, let us turn it into a list
-        seed = seed.split()
+        # the old version of the code used a str as the seed, so this is just a legacy check
+        # it should be passed as a list now
+        if isinstance(seed, str):
+            seed = seed.split()
+        
         melody = seed
         seed = self._start_symbols + seed
 
@@ -133,6 +135,15 @@ class MelodyGenerator:
                     # Else Handle note
                     if start_symbol == "r":
                         m21_event = m21.note.Rest(quarterLength=quarter_length_duration)
+                    elif '.' in start_symbol:
+                        #print(f"Chord found is {start_symbol}")
+                        notes_in_chord = start_symbol.split('.')
+                        notes = []
+                        for current_note in notes_in_chord:
+                            new_note = m21.note.Note(int(current_note))
+                            #new_note.storedInstrument = self.instrument
+                            notes.append(new_note)
+                        m21_event = m21.chord.Chord(notes, quarterLength=quarter_length_duration)
                     else:
                         m21_event = m21.note.Note(int(start_symbol), quarterLength=quarter_length_duration)
                     stream.append(m21_event)

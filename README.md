@@ -32,16 +32,23 @@ If you run into any errors, double check those above commands
 * Clone the repo
 * Navigate to the backend/ directory
 
+We use an Ubuntu base image for Docker. This is because of Fluidsynth, the virtual software synth for helping generate workable audio files. Although Fluidsynth does work on Alpine, Python is buggy on alpine images, and tensorflow cant compile because lack of a gcc. Using Ubuntu results in large images so be weary. 
+
 Build the docker image
 ```
-docker build -t symphony-api .
+docker build -t docker-username/symphony .
 ```
 
 Run the image
 ```
-docker run -p 8000:8000 symphony-api
+docker run -p 8000:8000 docker-username/symphony
+```
+
+To push the image to your docker repo use the command:
+```
+docker push docker-username/docker-reponame:symphony-api
 ```
 
 ## Debugging Docker & Dev tips
-* Make sure you add the source of model data to your .dockerignore or you will have a very large model
+* Make sure you add the source of model data to your .dockerignore or you will have a very large docker image
 

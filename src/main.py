@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from melody_generator import MelodyGenerator
 from file_helper import FileHelper
+from api_helper import determine_seed
 from music_helper import MusicHelper
 from fastapi.responses import FileResponse
 from midi2audio import FluidSynth
@@ -40,7 +41,6 @@ app.add_middleware(
 class SampleRequest(BaseModel):
     instrument_name: str
     emotion: str
-    seed: str
     num_steps: int
     max_seq_len: int
     temperature: float
@@ -57,7 +57,7 @@ async def testRequest(req: Request):
     return {"Hello": "World"}
 
 
-@app.get("/getSample")
+@app.post("/getSample")
 async def getSample(sampleRequest: SampleRequest):
     if sampleRequest.instrument_name not in model_paths:
         raise HTTPException(status_code=404, detail="Instrument not found")
@@ -72,9 +72,13 @@ async def getSample(sampleRequest: SampleRequest):
         model_paths[sampleRequest.instrument_name]['sequence_length']
     )
 
+    seed = determine_seed(model_paths[sampleRequest.instrument_name]['mapping_path'], file_helper)
+
+    print(f"The seed is: {seed}")
+
     # Generate our melody from a seed
     melody = melody_generator.generate_melody(
-        sampleRequest.seed,
+        seed,
         sampleRequest.num_steps,
         sampleRequest.max_seq_len,
         sampleRequest.temperature
