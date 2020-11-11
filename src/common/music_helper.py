@@ -78,11 +78,7 @@ class MusicHelper:
         # get key from the song
         parts = song.getElementsByClass(m21.stream.Part)
         measures_part0 = parts[0].getElementsByClass(m21.stream.Measure)
-        key = measures_part0[0][4] # This is the hardcoded index of the key from m21 docs
-
-        # estimate key using music21
-        if not isinstance(key, m21.key.Key):
-            key = song.analyze("key")
+        key = song.analyze("key")
 
         # get interval for transposition. E.g., Bmaj -> Cmaj
         if key.mode == "major":

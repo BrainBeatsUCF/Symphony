@@ -38,3 +38,27 @@ def determine_seed(mappings_path: str, file_helper):
 
     return seed
 
+def determine_metaparameters(emotion: str):
+    if emotion == "happy":
+        num_steps = random.randint(8, 32)
+        max_seq_len = random.randint(num_steps, (num_steps*2))
+        temperature = round(random.uniform(0.3, 1.5), 2)
+    elif emotion == "calm":
+        num_steps = random.randint(32, 64)
+        max_seq_len = random.randint(num_steps, (num_steps*2))
+        temperature = round(random.uniform(0.2, 0.8), 2)
+    elif emotion == "melancholy":
+        num_steps = random.randint(8, 42)
+        max_seq_len = random.randint(num_steps, (num_steps*2))
+        temperature = round(random.uniform(0.3, 1.0), 2)
+    elif emotion == "surprised":
+        num_steps = random.randint(8, 32)
+        max_seq_len = random.randint(num_steps, (num_steps*2))
+        temperature = round(random.uniform(0.8, 2.0), 2)
+    else:
+        print("No emotion found... setting random variables")
+        num_steps = random.randint(8, 64)
+        max_seq_len = random.randint(num_steps, (num_steps*2))
+        temperature = round(random.uniform(0.3, 2.5), 2)
+
+    return num_steps, max_seq_len, temperature

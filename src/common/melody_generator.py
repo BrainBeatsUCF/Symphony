@@ -104,7 +104,34 @@ class MelodyGenerator:
 
         return index
 
-    def save_melody(self, melody: List[str], file_name: str, format="mid", step_duration=0.25):
+    def _transpose_song(song: m21.stream.Stream, emotion: str):
+        key = song.analyze("key")
+        major_key = "C"
+        minor_key = "A"
+
+        if emotion == "happy":
+            major_key = "C"
+            minor_key = "A"
+        elif emotion == "calm":
+            major_key = "D"
+            minor_key = "B"
+        elif emotion == "melancholy":
+            major_key = "G"
+            minor_key = "F"
+        elif emotion == "surprised":
+            major_key = "E"
+            minor_key = "C"
+        
+        # get interval for transposition. E.g., Bmaj -> Cmaj
+        if key.mode == "major":
+            interval = m21.interval.Interval(key.tonic, m21.pitch.Pitch(major_key))
+        elif key.mode == "minor":
+            interval = m21.interval.Interval(key.tonic, m21.pitch.Pitch(minor_key))
+
+        # transpose song by calculated interval
+        return song.transpose(interval)
+
+    def save_melody(self, melody: List[str], file_name: str, emotion: str, format="mid", step_duration=0.25):
         """ 
         Converts our list to a m21 stream and saves the melody to the desired file format
 
@@ -154,8 +181,15 @@ class MelodyGenerator:
             else:
                 step_counter += 1
 
-        # write the m21 stream to midi file
+        # We first try to transpose the song according to its emotion
+        # if that fails we just save the original song/stream to disk
         try:
-            stream.write(format, file_name)
+            new_stream = self._transpose_song(stream, emotion)
+            new_stream.write(format, file_name)
         except Exception as e:
-            print(f"Exception when trying to write file: {file_name} with error: {e}")
+            print(f"Exception when trying to write transposed song: {file_name} with error: {e}")
+            try:
+                print("Attempting to write original m21 stream instead")
+                stream.write(format, file_name)
+            except Exception as e:
+                print(f"Exception when trying to write file: {file_name} with error: {e}")        

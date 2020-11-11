@@ -5,3 +5,4 @@ aiofiles
 music21
 matplotlib
 midi2audio
+python-decouple

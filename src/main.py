@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from melody_generator import MelodyGenerator
 from file_helper import FileHelper
-from api_helper import determine_seed, delete_files
+from api_helper import determine_seed, delete_files, determine_metaparameters
 from music_helper import MusicHelper
 from fastapi.responses import FileResponse
 from midi2audio import FluidSynth
@@ -43,9 +43,6 @@ app.add_middleware(
 class SampleRequest(BaseModel):
     instrument_name: str
     emotion: str
-    num_steps: int
-    max_seq_len: int
-    temperature: float
 
 @app.get("/ping")
 def pong():
@@ -87,15 +84,17 @@ async def getSample(sampleRequest: SampleRequest):
     )
 
     seed = determine_seed(model_paths[sampleRequest.instrument_name]['mapping_path'], file_helper)
+    num_steps, max_seq_len, temperature = determine_metaparameters(sampleRequest.emotion)
 
-    print(f"The seed is: {seed}")
+    if debug_mode != 0:
+        print(f"The seed is: {seed}")
 
     # Generate our melody from a seed
     melody = melody_generator.generate_melody(
         seed,
-        sampleRequest.num_steps,
-        sampleRequest.max_seq_len,
-        sampleRequest.temperature
+        num_steps,
+        max_seq_len,
+        temperature
     )
 
     # Save the melody to disk
@@ -104,6 +103,7 @@ async def getSample(sampleRequest: SampleRequest):
     melody_generator.save_melody(
         melody,
         save_file_name,
+        sampleRequest.emotion,
         format="midi"
     )
 
