@@ -46,7 +46,7 @@ docker run -p 8000:8000 docker-username/symphony
 
 To push the image to your docker repo use the command:
 ```
-docker push docker-username/docker-reponame:symphony-api
+docker push docker-username/docker-reponame
 ```
 
 ## Debugging Docker & Dev tips

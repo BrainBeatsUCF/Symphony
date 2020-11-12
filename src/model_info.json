@@ -2,19 +2,41 @@
     "FolkLSTM": {
         "model_path": "./models/FolkLSTM/FolkLSTM.h5",
         "mapping_path": "./models/FolkLSTM/song_mappings.json",
-        "sequence_length": 64,
         "soundfont": "./soundfonts/FPDPCM98.SF2"
     },
     "KKSlider": {
         "model_path": "./models/KKSlider/KKSlider.h5",
         "mapping_path": "./models/KKSlider/song_mappings.json",
-        "sequence_length": 64,
         "soundfont": "./soundfonts/Zelda_3.sf2"
     },
-    "JazzDrums": {
-        "model_path": "./models/JazzDrums/JazzDrums.h5",
-        "mapping_path": "./models/JazzDrums/song_mappings.json",
-        "sequence_length": 64,
-        "soundfont": "./soundfonts/snares2.sf2"
+    "LatinDrums": {
+        "model_path": "./models/LatinDrums/JazzDrums.h5",
+        "mapping_path": "./models/LatinDrums/song_mappings.json",
+        "soundfont": "./soundfonts/latinKit.sf2"
+    },
+    "FunkDrums": {
+        "model_path": "./models/FunkDrums/FunkDrums.h5",
+        "mapping_path": "./models/FunkDrums/song_mappings.json",
+        "soundfont": "./soundfonts/funkKit.sf2"
+    },
+    "Guitar": {
+        "model_path": "./models/Guitar/Guitar.h5",
+        "mapping_path": "./models/Guitar/song_mappings.json",
+        "soundfont": "./soundfonts/guitar.sf2"
+    },
+    "Drums": {
+        "model_path": "./models/Drums/Drums.h5",
+        "mapping_path": "./models/Drums/song_mappings.json",
+        "soundfont": "./soundfonts/drumKit.sf2"
+    },
+    "Cymbals": {
+        "model_path": "./models/Cymbals/Drums.h5",
+        "mapping_path": "./models/Cymbals/song_mappings.json",
+        "soundfont": "./soundfonts/cymbals.sf2"
+    },
+    "AltDrums": {
+        "model_path": "./models/AltDrums/Drums.h5",
+        "mapping_path": "./models/AltDrums/song_mappings.json",
+        "soundfont": "./soundfonts/altDrumKit.sf2"
     }
 }
