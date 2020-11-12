@@ -104,7 +104,7 @@ class MelodyGenerator:
 
         return index
 
-    def _transpose_song(song: m21.stream.Stream, emotion: str):
+    def _transpose_song(self, song, emotion: str):
         key = song.analyze("key")
         major_key = "C"
         minor_key = "A"

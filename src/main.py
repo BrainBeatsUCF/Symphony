@@ -80,7 +80,7 @@ async def getSample(sampleRequest: SampleRequest):
         model_paths[sampleRequest.instrument_name]['model_path'],
         file_helper,
         model_paths[sampleRequest.instrument_name]['mapping_path'],
-        model_paths[sampleRequest.instrument_name]['sequence_length']
+        64
     )
 
     seed = determine_seed(model_paths[sampleRequest.instrument_name]['mapping_path'], file_helper)
